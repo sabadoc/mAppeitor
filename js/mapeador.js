@@ -32,7 +32,7 @@ function readFile() {
 }
 
 function getFileContent(file) {
-    let _file = file;
+    let _file = file;ñ
     let _start = 0;
     let _stop = _file.size - 1;
     let _reader = new FileReader();
@@ -63,10 +63,14 @@ function parseToCsv(filesBlob) {
 
 function getFileParse(fileBlob, delimiter) {
     let _rowsFile = [];
-    let _header = [];
+    let _fileByColumn = [];
     _rowsFile = fileBlob.split(/\n/).map(row => row.split(delimiter));
-    _header = _rowsFile[0];
-
-    return _fileResult;
+     _.forEach(_rowsFile[0], (title, indx) => {
+        fileByColumn.push([]);
+        _.forEach(_rowsFile, (row) => {
+            _fileByColumn[indx].push(row[indx])
+        })
+    })
+    return { content: _fileResult, header: _rowsFile[0]};
 }
 
