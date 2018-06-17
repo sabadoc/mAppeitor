@@ -1,3 +1,5 @@
+
+// TODO class file
 let fileList = ( () => {
     let _list = [];
     function addFile(file) {
@@ -13,6 +15,7 @@ let fileList = ( () => {
     }
 });
 
+// TODO class file
 function readFile() {
     let _files;
     let _fileList;
@@ -31,8 +34,9 @@ function readFile() {
     }
 }
 
+// TODO class file
 function getFileContent(file) {
-    let _file = file;ñ
+    let _file = file;
     let _start = 0;
     let _stop = _file.size - 1;
     let _reader = new FileReader();
@@ -53,6 +57,7 @@ function getFileContent(file) {
 
 }
 
+// TODO class file
 function parseToCsv(filesBlob) {
     let _fileResult = [];
     filesBlob.forEach(file => {
@@ -61,6 +66,7 @@ function parseToCsv(filesBlob) {
     return _fileResult;
 }
 
+// TODO class file
 function getFileParse(fileBlob, delimiter) {
     let _rowsFile = [];
     let _fileByColumn = [];
