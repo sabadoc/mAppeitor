@@ -18,7 +18,7 @@ let fileList = ( () => {
 // TODO class file
 function readFile() {
     let _files;
-    let _fileList;
+    
     let _filesReadPromise = [];
     let _filesInput = document.getElementsByClassName('file-input');
     _filesInput = _.filter(_filesInput, (fileInput) => fileInput != undefined);
