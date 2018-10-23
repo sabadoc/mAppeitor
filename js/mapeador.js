@@ -32,7 +32,7 @@ function readFile() {
 }
 
 function getFileContent(file) {
-    let _file = file;ñ
+    let _file = file;
     let _start = 0;
     let _stop = _file.size - 1;
     let _reader = new FileReader();
@@ -56,21 +56,33 @@ function getFileContent(file) {
 function parseToCsv(filesBlob) {
     let _fileResult = [];
     filesBlob.forEach(file => {
-        _fileResult.push(getFileParse(file, ',')); // TODO create class file
+        _fileResult.push(getFileParse(file, ';')); // TODO create class file
     });
     return _fileResult;
 }
 
 function getFileParse(fileBlob, delimiter) {
     let _rowsFile = [];
-    let _fileByColumn = [];
-    _rowsFile = fileBlob.split(/\n/).map(row => row.split(delimiter));
-     _.forEach(_rowsFile[0], (title, indx) => {
-        fileByColumn.push([]);
-        _.forEach(_rowsFile, (row) => {
-            _fileByColumn[indx].push(row[indx])
-        })
+    let _header = [];
+    let _fileContent = [];
+
+    _rowsFile = fileBlob.split(/\n/);
+    _header = _rowsFile.splice(0,1)[0].split(delimiter);
+    _rowsFile.forEach(row => {
+        var _obj = {};
+        row.split(delimiter).forEach((attr, indx) => {
+            _obj[_header[indx]] = attr;
+        });
+        _fileContent.push(_obj);
     })
-    return { content: _fileResult, header: _rowsFile[0]};
+
+    return { content: _fileContent, header: _header};
 }
 
+function parseColumnToStringQueryList(rows) {
+    var _stringQuery= '';
+    rows.forEach(value => {
+        _stringQuery += "'" + value + "',";
+    });
+    return _stringQuery;
+}
