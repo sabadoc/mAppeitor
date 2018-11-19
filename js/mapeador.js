@@ -56,7 +56,8 @@ function getFileContent(file) {
 function parseToCsv(filesBlob) {
     let _fileResult = [];
     filesBlob.forEach(file => {
-        _fileResult.push(getFileParse(file, ';')); // TODO create class file
+        //_fileResult.push(getFileParse(file, ';')); // TODO create class file
+        _fileResult.push(getLogsParse(file, ';', '|')); // logApex create class file
     });
     return _fileResult;
 }
@@ -73,6 +74,7 @@ function getFileParse(fileBlob, delimiter) {
         row.split(delimiter).forEach((attr, indx) => {
             _obj[_header[indx]] = attr;
         });
+
         _fileContent.push(_obj);
     })
 
@@ -85,4 +87,48 @@ function parseColumnToStringQueryList(rows) {
         _stringQuery += "'" + value + "',";
     });
     return _stringQuery;
+}
+
+function getLogsParse(fileBlob, delimiter, delimiterBody = ';') {
+    let _rowsFile = [];
+    let _header = [];
+    let _fileContent = [];
+
+    _rowsFile = fileBlob.split(/\n/);
+    _header = _rowsFile.splice(0,1)[0].split(delimiter);
+    _rowsFile.forEach(row => {
+        var _obj = {};
+
+        _obj = row.split(delimiterBody);
+        _fileContent.push(_obj);
+    })
+
+    return { content: getLogInfo(_fileContent), header: _header};
+}
+
+function getLogInfo(content) {
+    var result;
+    content.forEach((row, idx) => {
+        switch (row[1]) {
+            case 'SOQL_EXECUTE_BEGIN':
+                result.push({
+                    row: idx,
+                    soqlUsage: content[idx + 1][4],
+                    sql: row[4],
+                    rowInfo: row
+                });
+                break;
+            case 'DML_BEGIN':
+                result.push({
+                    row: idx,
+                    dmlUsage: content[idx + 1][4],
+                    sql: row[4],
+                    rowInfo: row
+                });
+                break;
+            default:
+                break;
+        }
+    });
+    return result;
 }
