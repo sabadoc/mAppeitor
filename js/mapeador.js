@@ -21,7 +21,11 @@ function readFile() {
     _filesInput = _.filter(_filesInput, (fileInput) => fileInput != undefined);
     if (_filesInput.length) {
         _files = _.map(_filesInput, input => input.files[0]);
-        _files.forEach(file => _filesReadPromise.push(getFileContent(file)));
+        _files.forEach(file => {
+            if (file) {
+                _filesReadPromise.push(getFileContent(file));
+            }
+        });
 
         Promise.all(_filesReadPromise).then(filesBlob => {
             _fileList = parseToCsv(filesBlob);
@@ -107,17 +111,17 @@ function getLogsParse(fileBlob, delimiter, delimiterBody = ';') {
 }
 
 function getLogInfo(content) {
-    var result;
+    var result = [];
     content.forEach((row, idx) => {
         switch (row[1]) {
-            case 'SOQL_EXECUTE_BEGIN':
+            /*case 'SOQL_EXECUTE_BEGIN':
                 result.push({
                     row: idx,
                     soqlUsage: content[idx + 1][4],
                     sql: row[4],
                     rowInfo: row
                 });
-                break;
+                break;*/
             case 'DML_BEGIN':
                 result.push({
                     row: idx,
@@ -131,4 +135,19 @@ function getLogInfo(content) {
         }
     });
     return result;
+}
+
+function groupByQuery(result) {
+    var listAgrupated = {};
+    result.forEach(row => {
+        if (listAgrupated[row.sql]) {
+            listAgrupated[row.sql].total =  listAgrupated[row.sql].total + 1;
+            listAgrupated[row.sql].rows.push(row.row);
+        } else {
+            listAgrupated[row.sql] = {};
+            listAgrupated[row.sql].total =  0;
+            listAgrupated[row.sql].rows = [];
+            listAgrupated[row.sql].rows.push(row.row);
+        }
+    });
 }
